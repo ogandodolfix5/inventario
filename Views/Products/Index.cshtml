@@ -1,0 +1,106 @@
+@model IEnumerable<InventarioMvc.Models.Product>
+@{
+    ViewData["Title"] = "Inventario";
+    var q = (string?)ViewData["q"] ?? "";
+    decimal sumaCosto = ViewData["SumaCostoTotal"] is decimal a ? a : 0m;
+    decimal sumaVenta = ViewData["SumaValorTotalVenta"] is decimal b ? b : 0m;
+    int total = ViewData["TotalItems"] is int c ? c : 0;
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="mb-0">Inventario</h1>
+        <a class="btn btn-primary" asp-action="Create">+ Nuevo producto</a>
+    </div>
+
+    @* Mensajes de venta rápida *@
+    @if (TempData["Ok"] != null)
+    {
+        <div class="alert alert-success">@TempData["Ok"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <form method="get" class="row g-2 mb-3">
+        <div class="col-md-6">
+            <input class="form-control" name="q" value="@q" placeholder="Buscar por nombre o descripción..." />
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-outline-secondary w-100" type="submit">Buscar</button>
+        </div>
+        <div class="col-md-2">
+            <a class="btn btn-outline-dark w-100" asp-action="Index">Limpiar</a>
+        </div>
+    </form>
+
+    <div class="alert alert-info">
+        <div class="d-flex flex-wrap gap-3">
+            <div><strong>Productos:</strong> @total</div>
+            <div><strong>Costo total:</strong> @sumaCosto.ToString("C")</div>
+            <div><strong>Valor total venta:</strong> @sumaVenta.ToString("C")</div>
+            <div><strong>Utilidad potencial:</strong> @( (sumaVenta - sumaCosto).ToString("C") )</div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Imagen</th>
+                    <th>Nombre</th>
+                    <th class="text-end">Costo</th>
+                    <th class="text-end">Precio</th>
+                    <th class="text-end">Stock</th>
+                    <th class="text-end">Gan. x unidad</th>
+                    <th class="text-end">Costo total</th>
+                    <th class="text-end">Valor total venta</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var p in Model)
+            {
+                <tr>
+                    <td style="width:90px">
+                        @{
+                            var img = !string.IsNullOrWhiteSpace(p.ImagePath) ? p.ImagePath
+                                     : !string.IsNullOrWhiteSpace(p.ImageUrl) ? p.ImageUrl
+                                     : null;
+                        }
+                        @if (!string.IsNullOrWhiteSpace(img))
+                        {
+                            <img src="@img" alt="@p.Name" style="width:70px;height:70px;object-fit:cover;border-radius:8px;" />
+                        }
+                    </td>
+                    <td>
+                        <div class="fw-semibold">@p.Name</div>
+                        @if (!string.IsNullOrWhiteSpace(p.Description))
+                        {
+                            <div class="text-muted small">@p.Description</div>
+                        }
+                    </td>
+                    <td class="text-end">@p.Cost.ToString("C")</td>
+                    <td class="text-end">@p.Price.ToString("C")</td>
+                    <td class="text-end">@p.Stock</td>
+                    <td class="text-end">@p.ProfitPerUnit.ToString("C")</td>
+                    <td class="text-end">@p.TotalCost.ToString("C")</td>
+                    <td class="text-end">@p.TotalSaleValue.ToString("C")</td>
+                    <td class="text-end">
+                        <div class="btn-group">
+                            <a class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-id="@p.Id">Ver</a>
+                            <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@p.Id">Editar</a>
+                            <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@p.Id">Borrar</a>
+                            <form asp-controller="Sales" asp-action="SellOne" method="post" class="ms-2">
+                                <input type="hidden" name="id" value="@p.Id" />
+                                <button type="submit" class="btn btn-sm btn-success">Vender 1</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,23 @@
+@model InventarioMvc.Models.Product
+@{
+    ViewData["Title"] = "Borrar producto";
+}
+<div class="container">
+    <h1>Confirmar borrado</h1>
+    <div class="alert alert-warning">
+        ¿Seguro que deseas borrar <strong>@Model.Name</strong>?
+    </div>
+
+    <dl class="row">
+        <dt class="col-sm-3">Precio</dt>
+        <dd class="col-sm-9">@Model.Price.ToString("C")</dd>
+        <dt class="col-sm-3">Stock</dt>
+        <dd class="col-sm-9">@Model.Stock</dd>
+    </dl>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Sí, borrar</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+    </form>
+</div>

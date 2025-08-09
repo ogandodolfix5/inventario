@@ -1,0 +1,75 @@
+@model InventarioMvc.Models.Product
+@{
+    ViewData["Title"] = "Editar producto";
+    var currentImg = !string.IsNullOrWhiteSpace(Model.ImagePath) ? Model.ImagePath
+                   : !string.IsNullOrWhiteSpace(Model.ImageUrl) ? Model.ImageUrl
+                   : null;
+}
+<div class="container">
+    <h1>Editar producto</h1>
+    <form asp-action="Edit" enctype="multipart/form-data" method="post" class="row g-3">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="col-md-6">
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label asp-for="Description" class="form-label"></label>
+            <input asp-for="Description" class="form-control" />
+        </div>
+
+        <div class="col-md-4">
+            <label asp-for="Cost" class="form-label"></label>
+            <input asp-for="Cost" class="form-control" />
+            <span asp-validation-for="Cost" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-4">
+            <label asp-for="Price" class="form-label"></label>
+            <input asp-for="Price" class="form-control" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-4">
+            <label asp-for="Stock" class="form-label"></label>
+            <input asp-for="Stock" class="form-control" />
+            <span asp-validation-for="Stock" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">URL de imagen</label>
+            <input asp-for="ImageUrl" class="form-control" />
+            <span class="form-text">Si subes archivo, se ignorará esta URL.</span>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Subir imagen</label>
+            <input type="file" name="ImageFile" class="form-control" accept="image/*" />
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(currentImg))
+        {
+            <div class="col-12">
+                <div class="d-flex align-items-center gap-3">
+                    <img src="@currentImg" style="width:100px;height:100px;object-fit:cover;border-radius:10px;" />
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="removeImage" value="true" id="removeImage">
+                        <label class="form-check-label" for="removeImage">Quitar imagen</label>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="col-12 d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

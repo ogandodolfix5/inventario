@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - Inventario</title>
+
+    <!-- Bootstrap 5 desde CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Tailwind CDN (con preflight desactivado para no romper Bootstrap) -->
+    <script>
+      window.tailwind = window.tailwind || {};
+      tailwind.config = { corePlugins: { preflight: false } };
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+@{
+    var full = ViewBag.FullWidth as bool? ?? false;
+}
+@if (full)
+{
+    <!-- Vista a pantalla completa (LOGIN Tailwind) -->
+    <div class="min-h-screen bg-gray-900">
+        @RenderBody()
+
+        <footer class="border-top text-muted border-white/10">
+            <div class="container py-3 text-gray-400">
+                &copy; @DateTime.Now.Year - Inventario
+            </div>
+        </footer>
+    </div>
+}
+else
+{
+    <header>
+        @if (User.Identity?.IsAuthenticated ?? false)
+        {
+            <nav class="navbar navbar-expand bg-light border-bottom shadow-sm">
+                <div class="container-fluid">
+                    <a class="navbar-brand" asp-controller="Home" asp-action="Index">Inventario</a>
+
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Products" asp-action="Index">Productos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Sales" asp-action="Index">Ventas</a>
+                        </li>
+                    </ul>
+
+                    <form asp-controller="Account" asp-action="Logout" method="post" class="d-flex">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-outline-danger">Salir</button>
+                    </form>
+                </div>
+            </nav>
+        }
+    </header>
+
+    <div class="container my-4">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container py-3">
+            &copy; @DateTime.Now.Year - Inventario
+        </div>
+    </footer>
+}
+
+    <!-- JS Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,86 @@
+﻿@using InventarioMvc.Models
+@{
+    ViewData["Title"] = "Dashboard";
+    decimal invCosto = ViewData["InvCosto"] is decimal a ? a : 0m;
+    decimal invVenta = ViewData["InvVenta"] is decimal b ? b : 0m;
+    decimal invUtilidad = ViewData["InvUtilidad"] is decimal c ? c : 0m;
+    int items = ViewData["TotalItems"] is int d ? d : 0;
+    int stock = ViewData["TotalStock"] is int e ? e : 0;
+    decimal totalHoy = ViewData["TotalHoy"] is decimal f ? f : 0m;
+    decimal total7 = ViewData["Total7"] is decimal g ? g : 0m;
+    decimal utilidad7 = ViewData["Utilidad7"] is decimal h ? h : 0m;
+    var ultimas = (IEnumerable<Sale>?)ViewData["Ultimas"] ?? Enumerable.Empty<Sale>();
+}
+<div class="container">
+    <h1 class="mb-4">Dashboard</h1>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="text-muted">Productos</div>
+                    <div class="fs-3 fw-bold">@items</div>
+                    <div class="small text-muted">Stock total: @stock</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="text-muted">Costo inventario</div>
+                    <div class="fs-3 fw-bold">@invCosto.ToString("C")</div>
+                    <div class="small text-muted">Valor venta: @invVenta.ToString("C")</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="text-muted">Utilidad potencial</div>
+                    <div class="fs-3 fw-bold">@invUtilidad.ToString("C")</div>
+                    <div class="small text-muted">Inventario actual</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="text-muted">Ventas (últ. 7 días)</div>
+                    <div class="fs-3 fw-bold">@total7.ToString("C")</div>
+                    <div class="small text-muted">Hoy: @totalHoy.ToString("C")</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert alert-success">
+        Utilidad realizada aprox. (7 días): <strong>@utilidad7.ToString("C")</strong>
+    </div>
+
+    <h5 class="mt-4 mb-2">Últimas ventas</h5>
+    <div class="table-responsive">
+        <table class="table table-sm table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Producto</th>
+                    <th class="text-end">Cantidad</th>
+                    <th class="text-end">Precio unit.</th>
+                    <th class="text-end">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var s in ultimas)
+            {
+                <tr>
+                    <td>@s.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>@s.Product?.Name</td>
+                    <td class="text-end">@s.Quantity</td>
+                    <td class="text-end">@s.UnitPrice.ToString("C")</td>
+                    <td class="text-end">@s.Total.ToString("C")</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

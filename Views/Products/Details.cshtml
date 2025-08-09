@@ -1,0 +1,51 @@
+@model InventarioMvc.Models.Product
+@{
+    ViewData["Title"] = "Producto";
+    var img = !string.IsNullOrWhiteSpace(Model.ImagePath) ? Model.ImagePath
+             : !string.IsNullOrWhiteSpace(Model.ImageUrl) ? Model.ImageUrl
+             : null;
+}
+<div class="container">
+    <h1>@Model.Name</h1>
+    <div class="row g-4">
+        <div class="col-md-4">
+            @if (!string.IsNullOrWhiteSpace(img))
+            {
+                <img src="@img" class="img-fluid rounded" />
+            }
+            else
+            {
+                <div class="border rounded p-4 text-muted text-center">Sin imagen</div>
+            }
+        </div>
+        <div class="col-md-8">
+            <dl class="row">
+                <dt class="col-sm-4">Descripción</dt>
+                <dd class="col-sm-8">@Model.Description</dd>
+
+                <dt class="col-sm-4">Costo</dt>
+                <dd class="col-sm-8">@Model.Cost.ToString("C")</dd>
+
+                <dt class="col-sm-4">Precio</dt>
+                <dd class="col-sm-8">@Model.Price.ToString("C")</dd>
+
+                <dt class="col-sm-4">Stock</dt>
+                <dd class="col-sm-8">@Model.Stock</dd>
+
+                <dt class="col-sm-4">Ganancia x unidad</dt>
+                <dd class="col-sm-8">@Model.ProfitPerUnit.ToString("C")</dd>
+
+                <dt class="col-sm-4">Costo total</dt>
+                <dd class="col-sm-8">@Model.TotalCost.ToString("C")</dd>
+
+                <dt class="col-sm-4">Valor total venta</dt>
+                <dd class="col-sm-8">@Model.TotalSaleValue.ToString("C")</dd>
+            </dl>
+
+            <div class="d-flex gap-2">
+                <a class="btn btn-primary" asp-action="Edit" asp-route-id="@Model.Id">Editar</a>
+                <a class="btn btn-outline-secondary" asp-action="Index">Volver</a>
+            </div>
+        </div>
+    </div>
+</div>
